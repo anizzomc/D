@@ -35,23 +35,22 @@ struct hashCDT {
 static void grow(hash_t hash);
 static hash_t do_hash_new(hash_fnc_t hash_fnc, int size);
 static int clear_table(struct slot_t table[], int slot, int size);
-static void copy(hash_t dst, hash_t src);
 
 hash_t hash_new(hash_fnc_t hash_fnc){
 	return do_hash_new(hash_fnc, HASHINISIZE);
 }
 
 int hash_insert(hash_t hash, void* key, void* element){
-	int slot, next;
+	unsigned int slot, next;
 	int i;
 
-	grow(hash);
 	
+	grow(hash);
+
 	slot = hash->hash_fnc(key) % hash->table_size;
 
 	for(i = 0 ; i < hash->table_size ; i++){
 		next = (slot+i) % hash->table_size;
-
 		if(hash->table[next].status == STATUS_EMPTY){
 			hash->table[next].key = key;
 			hash->table[next].element = element;
@@ -110,7 +109,10 @@ void* hash_delete(hash_t hash, void* key) {
 		}
 	}
 	return ret;
-}	
+}
+int hash_size(hash_t hash) {
+	return hash->element_count;
+}
 
 void hash_destroy(hash_t hash){
 	free(hash->table);
@@ -140,7 +142,7 @@ static void grow(hash_t hash){
 	hash_t new_hash;
 	int i;
 
-	if((((double)hash->element_count)/hash->table_size) > BUSY_RATIO) {
+	if((((double)hash->element_count)/hash->table_size) < BUSY_RATIO) {
 		return;
 	}
 
@@ -152,17 +154,16 @@ static void grow(hash_t hash){
 		}
 	}
 
-	hash_destroy(hash);
-	copy(hash, new_hash);
+
+	free(hash->table);
+	hash->table = new_hash->table;
+
+	hash->table_size = new_hash->table_size;
+	hash->element_count = new_hash->element_count;
+
+	free(new_hash);
 
 }
-
-static void copy(hash_t dst, hash_t src){
-	dst->table = src->table;
-	dst->table_size = src->table_size;
-	dst->element_count = src->element_count;
-}
-
 static int clear_table(struct slot_t table[], int slot, int size){
 	int i;
 	

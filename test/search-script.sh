@@ -6,8 +6,27 @@ echo '
 /* This is auto-generated code. Edit at your own peril. */
 #include <stdio.h>
 #include <stdlib.h>
+#include "base/util.h"
+#include <signal.h>
 
 #include "../cutest/CuTest.h"
+
+void signal_handler();
+void SignalInit(void);
+
+void SignalInit(void){
+	struct sigaction sigIntHandler;
+	sigIntHandler.sa_handler = signal_handler;
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
+	sigaction(SIGSEGV, &sigIntHandler, NULL);
+
+}
+
+void signal_handler() {
+	print_trace();
+	exit(1);
+}
 
 '
 
@@ -49,6 +68,7 @@ echo \
 
 int main(void)
 {
+	SignalInit();
     RunAllTests();
 }
 '
