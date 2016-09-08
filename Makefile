@@ -1,5 +1,5 @@
 INC_PATH=include/
-CFLAGS=-c
+CFLAGS=-c -Wall
 TARGET=out/libd.a
 TEST_BUILD=out/test
 OBJ_PATH=obj/

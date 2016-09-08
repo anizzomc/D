@@ -112,7 +112,7 @@ void* hash_delete(hash_t hash, void* key) {
 	return ret;
 }	
 
-void hash_detroy(hash_t hash){
+void hash_destroy(hash_t hash){
 	free(hash->table);
 	free(hash);
 }
@@ -152,7 +152,7 @@ static void grow(hash_t hash){
 		}
 	}
 
-	hash_detroy(hash);
+	hash_destroy(hash);
 	copy(hash, new_hash);
 
 }
