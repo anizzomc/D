@@ -12,6 +12,7 @@ TEST_OBJ_FILES=$(TEST_FILES:.c=.o)
 build: $(TARGET)
 
 $(TARGET):
+	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/d_malloc.c -o $(OBJ_PATH)d_malloc.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/hash.c -o $(OBJ_PATH)hash.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/util.c -o $(OBJ_PATH)util.o
 	ar rcs $(TARGET) $(OBJ_PATH)*.o
