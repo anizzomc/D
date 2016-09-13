@@ -12,6 +12,7 @@ TEST_OBJ_FILES=$(TEST_FILES:.c=.o)
 build: $(TARGET)
 
 $(TARGET):
+	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/clist.c -o $(OBJ_PATH)clist.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/hash.c -o $(OBJ_PATH)hash.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/util.c -o $(OBJ_PATH)util.o
 	ar rcs $(TARGET) $(OBJ_PATH)*.o
@@ -24,6 +25,7 @@ $(TEST_FILE):
 
 $(TEST_BUILD): $(TARGET) $(TEST_FILE)
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/hashTest.c -o test/obj/hashTest.o 
+	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/clistTest.c -o test/obj/clistTest.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/obj/$(TEST_FILE) -o test/obj/$(TEST_FILE_OBJ)
 	gcc $(CFLAGS) -I$(INC_PATH) test/cutest/CuTest.c -o test/obj/CuTest.o
 	gcc test/obj/*.o -Lout/ -ld -o out/test
