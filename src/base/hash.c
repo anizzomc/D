@@ -25,22 +25,22 @@ struct slot_t {
 	void *element;
 };
 
-struct hashCDT {
+struct d_hashCDT {
 	struct slot_t* table;
 	int element_count;
 	int table_size;
-	hash_fnc_t hash_fnc;
+	d_hash_fnc_t hash_fnc;
 };
 
-static void grow(hash_t hash);
-static hash_t do_hash_new(hash_fnc_t hash_fnc, int size);
+static void grow(d_hash_t hash);
+static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size);
 static int clear_table(struct slot_t table[], int slot, int size);
 
-hash_t hash_new(hash_fnc_t hash_fnc){
+d_hash_t d_hash_new(d_hash_fnc_t hash_fnc){
 	return do_hash_new(hash_fnc, HASHINISIZE);
 }
 
-int hash_insert(hash_t hash, void* key, void* element){
+int d_hash_insert(d_hash_t hash, void* key, void* element){
 	unsigned int slot, next;
 	int i;
 
@@ -68,7 +68,7 @@ int hash_insert(hash_t hash, void* key, void* element){
 }
 
 
-void* hash_fetch(hash_t hash, void* key){
+void* d_hash_fetch(d_hash_t hash, void* key){
 	int i;
 	int slot, next;
 
@@ -84,7 +84,7 @@ void* hash_fetch(hash_t hash, void* key){
 	return NULL;
 }
 
-void* hash_delete(hash_t hash, void* key) {
+void* d_hash_delete(d_hash_t hash, void* key) {
 	int i;
 	int slot, next;
 	void *ret = NULL;
@@ -110,21 +110,21 @@ void* hash_delete(hash_t hash, void* key) {
 	}
 	return ret;
 }
-int hash_size(hash_t hash) {
+int d_hash_size(d_hash_t hash) {
 	return hash->element_count;
 }
 
-void hash_destroy(hash_t hash){
+void d_hash_destroy(d_hash_t hash){
 	free(hash->table);
 	free(hash);
 }
 
-static hash_t do_hash_new(hash_fnc_t hash_fnc, int size){
-	hash_t hash;
+static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size){
+	d_hash_t hash;
 	int i;
 	
 	//TODO: handle null
-	hash = malloc(sizeof(struct hashCDT));
+	hash = malloc(sizeof(struct d_hashCDT));
 	hash->table = malloc(size*sizeof(struct slot_t));
 
 	hash->element_count = 0;
@@ -138,8 +138,8 @@ static hash_t do_hash_new(hash_fnc_t hash_fnc, int size){
 }
 
 
-static void grow(hash_t hash){
-	hash_t new_hash;
+static void grow(d_hash_t hash){
+	d_hash_t new_hash;
 	int i;
 
 	if((((double)hash->element_count)/hash->table_size) < BUSY_RATIO) {
@@ -150,7 +150,7 @@ static void grow(hash_t hash){
 
 	for (i = 0 ; i < hash->table_size ; i++){
 		if (hash->table[i].status == STATUS_BUSY) {
-			hash_insert(new_hash, hash->table[i].key, hash->table[i].element);		
+			d_hash_insert(new_hash, hash->table[i].key, hash->table[i].element);		
 		}
 	}
 

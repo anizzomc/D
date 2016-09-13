@@ -6,7 +6,7 @@
 
 static unsigned int hash_same_fn(void *key);
 
-static hash_t hash = NULL;
+static d_hash_t hash = NULL;
 
 static void after();
 
@@ -23,13 +23,13 @@ void TestBaseHash_insert(CuTest *tc) {
 	void *key = (void*) 0xDEADBEEF;
 	void *value = (void *) 0xDEADC0DE;
 
-	CuAssertIntEquals(tc, 0, hash_size(hash));
+	CuAssertIntEquals(tc, 0, d_hash_size(hash));
 
-	CuAssertTrue(tc, hash_insert(hash, key, value));
+	CuAssertTrue(tc, d_hash_insert(hash, key, value));
 
-	CuAssertIntEquals(tc, 1, hash_size(hash));
+	CuAssertIntEquals(tc, 1, d_hash_size(hash));
 
-	CuAssertPtrEquals(tc, value, hash_fetch(hash, key));
+	CuAssertPtrEquals(tc, value, d_hash_fetch(hash, key));
 
 	after();
 }
@@ -40,13 +40,13 @@ void TestBaseHash_insert_over(CuTest *tc) {
 	void *value = (void*) 0xDEADC0DE;
 	void *value2 = (void*) 0xFA137ED0;
 
-	CuAssertTrue(tc, hash_insert(hash, key, value));
-	CuAssertPtrEquals(tc, value, hash_fetch(hash, key));
-	CuAssertIntEquals(tc, 1, hash_size(hash));
+	CuAssertTrue(tc, d_hash_insert(hash, key, value));
+	CuAssertPtrEquals(tc, value, d_hash_fetch(hash, key));
+	CuAssertIntEquals(tc, 1, d_hash_size(hash));
 
-	CuAssertTrue(tc, hash_insert(hash, key, value2));
-	CuAssertPtrEquals(tc, value2, hash_fetch(hash, key));
-	CuAssertIntEquals(tc, 1, hash_size(hash));
+	CuAssertTrue(tc, d_hash_insert(hash, key, value2));
+	CuAssertPtrEquals(tc, value2, d_hash_fetch(hash, key));
+	CuAssertIntEquals(tc, 1, d_hash_size(hash));
 
 	after();
 } 
@@ -56,11 +56,11 @@ void TestBaseHash_delete(CuTest *tc) {
 	void *key = (void*) 0xDEADBEEF;
 	void *value = (void *) 0xDEADC0DE;
 
-	CuAssertTrue(tc, hash_insert(hash, key, value));
+	CuAssertTrue(tc, d_hash_insert(hash, key, value));
 
-	CuAssertPtrEquals(tc, value, hash_delete(hash, key));
-	CuAssertPtrEquals(tc, NULL, hash_fetch(hash, key));
-	CuAssertPtrEquals(tc, NULL, hash_delete(hash, key));
+	CuAssertPtrEquals(tc, value, d_hash_delete(hash, key));
+	CuAssertPtrEquals(tc, NULL, d_hash_fetch(hash, key));
+	CuAssertPtrEquals(tc, NULL, d_hash_delete(hash, key));
 
 
 	after();
@@ -75,48 +75,48 @@ void TestBashHash_stress(CuTest *tc) {
 	for(i = 1; i <= LIMIT_STRESS ; i++) {
 		long key = i * 13;
 		long value = key - 1;
-		CuAssertTrue(tc, hash_insert(hash, (void*) key, (void*) value));
+		CuAssertTrue(tc, d_hash_insert(hash, (void*) key, (void*) value));
 	}
 
-	CuAssertIntEquals(tc, LIMIT_STRESS, hash_size(hash));
+	CuAssertIntEquals(tc, LIMIT_STRESS, d_hash_size(hash));
 
 	for(i = 1 ; i <= LIMIT_STRESS ; i++) {
 		long key = i * 13;
-		CuAssertPtrEquals(tc, (void*) key - 1, hash_fetch(hash, (void*)key));
+		CuAssertPtrEquals(tc, (void*) key - 1, d_hash_fetch(hash, (void*)key));
 	}
 
 	for(; i <= LIMIT_STRESS*2 ; i++) {
 		long key = i * 13;
 		long value = key - 1;
-		CuAssertTrue(tc, hash_insert(hash, (void*) key, (void*) value));
+		CuAssertTrue(tc, d_hash_insert(hash, (void*) key, (void*) value));
 	}
 
-	CuAssertIntEquals(tc, LIMIT_STRESS*2, hash_size(hash));
+	CuAssertIntEquals(tc, LIMIT_STRESS*2, d_hash_size(hash));
 
 	for(i = 1 ; i <= LIMIT_STRESS ; i++) {
 		long key = i * 13;
-		CuAssertPtrEquals(tc, (void*) key - 1, hash_delete(hash, (void*)key));
+		CuAssertPtrEquals(tc, (void*) key - 1, d_hash_delete(hash, (void*)key));
 	}
 
-	CuAssertIntEquals(tc, LIMIT_STRESS, hash_size(hash));
+	CuAssertIntEquals(tc, LIMIT_STRESS, d_hash_size(hash));
 
 	for(i = 1; i <= LIMIT_STRESS ; i++) {
 		long key = i * 7;
 		long value = key - 1;
-		CuAssertTrue(tc, hash_insert(hash, (void*) key, (void*) value));
+		CuAssertTrue(tc, d_hash_insert(hash, (void*) key, (void*) value));
 	}
 
-	CuAssertIntEquals(tc, LIMIT_STRESS*2, hash_size(hash));
+	CuAssertIntEquals(tc, LIMIT_STRESS*2, d_hash_size(hash));
 
 	after();
 }
 
 static void before() {
-	hash = hash_new(hash_same_fn);	
+	hash = d_hash_new(hash_same_fn);	
 }
 
 static void after() {
-	hash_destroy(hash);
+	d_hash_destroy(hash);
 }
 
 static unsigned int hash_same_fn(void *key) {
