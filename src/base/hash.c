@@ -1,6 +1,8 @@
 
 
 #include "base/hash.h"
+#include "base/d_malloc.h"
+#include "base/log.h"
 #include <stdlib.h>
 
 #define HASHINISIZE 3337
@@ -123,9 +125,8 @@ static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size){
 	d_hash_t hash;
 	int i;
 	
-	//TODO: handle null
-	hash = malloc(sizeof(struct d_hashCDT));
-	hash->table = malloc(size*sizeof(struct slot_t));
+	hash = d_malloc(sizeof(struct d_hashCDT));
+	hash->table = d_malloc(size*sizeof(struct slot_t));
 
 	hash->element_count = 0;
 	hash->table_size = size;
