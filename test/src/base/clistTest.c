@@ -72,8 +72,6 @@ void TestBaseClist_full(CuTest *tc) {
 
 	CuAssertTrue(tc, d_clist_is_empty(list));
 
-	printf("----\n");
-
 	for(i = 0 ; i < SIZE ; i++) {
 		long elem = ((i+1)*3337);
 		CuAssertTrue(tc, !d_clist_is_full(list));

@@ -1,6 +1,7 @@
 /* clist.c */
 #include "base/clist.h"
 #include "base/util.h"
+#include "base/d_malloc.h"
 #include <stdlib.h>
 
 
@@ -13,8 +14,8 @@ struct d_clistCDT {
 
 
 d_clist d_clist_new(size_t max_size) {
-	d_clist list = malloc(sizeof(struct d_clistCDT));
-	list->elements = malloc(sizeof(void*)*(max_size+1));
+	d_clist list = d_malloc(sizeof(struct d_clistCDT));
+	list->elements = d_malloc(sizeof(void*)*(max_size+1));
 
 	list->max_size = max_size + 1;
 	list->head = list->tail = 0;
