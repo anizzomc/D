@@ -2,6 +2,7 @@
 #include "base/clist.h"
 #include "base/util.h"
 #include "base/d_malloc.h"
+#include "base/log.h"
 #include <stdlib.h>
 
 
@@ -26,7 +27,7 @@ d_clist d_clist_new(size_t max_size) {
 
 void d_clist_put(d_clist list, void *elem){
 	if(d_clist_is_full(list)) {
-		//TODO: Log error
+		ERROR("list is full");
 		print_trace();
 		abort();
 	}
@@ -36,7 +37,7 @@ void d_clist_put(d_clist list, void *elem){
 
 void* d_clist_take(d_clist list) {
 	if(d_clist_is_empty(list)) {
-		//TODO: Log error
+		ERROR("list is empty");
 		print_trace();
 		abort();
 	}
