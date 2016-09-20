@@ -29,7 +29,7 @@ size_t d_stack_size(d_stack_t stack) {
 
 void d_stack_push(d_stack_t stack, void *elem) {
 	if(d_stack_is_full(stack)) {
-		ERROR("stack is full");
+		ERROR("stack is full!");
 		print_trace();
 		abort();
 	}
@@ -37,12 +37,12 @@ void d_stack_push(d_stack_t stack, void *elem) {
 }
 
 void* d_stack_pop(d_stack_t stack) {
-	if(d_stack_is_full(stack)) {
-		ERROR("stack is full");
+	if(d_stack_is_empty(stack)) {
+		ERROR("stack is empty!");
 		print_trace();
 		abort();
 	}
-	return stack->elements[stack->top--];
+	return stack->elements[--stack->top];
 }
 
 int d_stack_is_empty(d_stack_t stack) {
