@@ -21,6 +21,4 @@ int d_stack_is_full(d_stack_t stack);
 
 void d_stack_destroy(d_stack_t stack);
 
-
-
 #endif

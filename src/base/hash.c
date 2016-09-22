@@ -1,5 +1,3 @@
-
-
 #include "base/hash.h"
 #include "base/d_malloc.h"
 #include "base/log.h"
@@ -34,6 +32,8 @@ struct d_hashCDT {
 	d_hash_fnc_t hash_fnc;
 };
 
+
+static unsigned default_hash_fnc(void* key);
 static void grow(d_hash_t hash);
 static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size);
 static int clear_table(struct slot_t table[], int slot, int size);
@@ -46,7 +46,6 @@ int d_hash_insert(d_hash_t hash, void* key, void* element){
 	unsigned int slot, next;
 	int i;
 
-	
 	grow(hash);
 
 	slot = hash->hash_fnc(key) % hash->table_size;
@@ -112,8 +111,22 @@ void* d_hash_delete(d_hash_t hash, void* key) {
 	}
 	return ret;
 }
-int d_hash_size(d_hash_t hash) {
+
+unsigned d_hash_size(d_hash_t hash) {
 	return hash->element_count;
+}
+
+void** d_hash_keys(d_hash_t hash) {
+	int i, j;
+	void** ret = d_malloc(sizeof(void*)*d_hash_size(hash));
+
+	for(i = 0, j = 0 ; i < hash->table_size ;i++) {
+		if(hash->table[i].status == STATUS_BUSY) {
+			ret[j++] = hash->table[i].key;
+		}
+	}
+
+	return ret;
 }
 
 void d_hash_destroy(d_hash_t hash){
@@ -130,7 +143,7 @@ static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size){
 
 	hash->element_count = 0;
 	hash->table_size = size;
-	hash->hash_fnc = hash_fnc;
+	hash->hash_fnc = (hash_fnc == NULL)? default_hash_fnc : hash_fnc;
 
 	for(i = 0 ; i < hash->table_size ; i++)
 		hash->table[i].status = STATUS_EMPTY;
@@ -174,8 +187,6 @@ static int clear_table(struct slot_t table[], int slot, int size){
 	return i-1;
 }
 
-
-
-
-
-
+static unsigned default_hash_fnc(void* key) {
+	return (unsigned)key;
+}

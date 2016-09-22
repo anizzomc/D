@@ -1,10 +1,21 @@
 /* mm.h */
-#ifndef 
+#ifndef __MM_H_
+#define __MM_H_
 
-void (*D_free_fnc_t)(void *);
+#include <stddef.h>
 
-void *D_alloc(unsigned int size, D_free_fnc_t free_fnc);
+typedef void (*D_free_fnc_t)(void*);
 
-void D_retain(void* ptr);
+void D_mm_init();
 
-void D_release(void *ptr);
+void* D_alloc(size_t size, D_free_fnc_t free_fnc);
+
+unsigned D_retain(void* ptr);
+
+unsigned D_release(void* ptr);
+
+unsigned D_retain_count(void* ptr);
+
+void D_mm_destroy();
+
+#endif
