@@ -8,13 +8,15 @@ typedef void (*D_free_fnc_t)(void*);
 
 void D_mm_init();
 
-void* D_alloc(size_t size, D_free_fnc_t free_fnc);
+void* D_mm_alloc(size_t size, D_free_fnc_t free_fnc);
 
-unsigned D_retain(void* ptr);
+unsigned D_mm_retain(void* ptr);
 
-unsigned D_release(void* ptr);
+unsigned D_mm_release(void* ptr);
 
-unsigned D_retain_count(void* ptr);
+unsigned D_mm_retain_count(void* ptr);
+
+void D_mm_clean();
 
 void D_mm_destroy();
 

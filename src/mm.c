@@ -23,7 +23,7 @@ void D_mm_init() {
 	references = d_hash_new(NULL);
 }
 
-void* D_alloc(size_t size, D_free_fnc_t free_fnc) {
+void* D_mm_alloc(size_t size, D_free_fnc_t free_fnc) {
 	void *ret = d_malloc(size);
 	slot_t* slot = d_malloc(sizeof(slot_t));
 
@@ -35,13 +35,13 @@ void* D_alloc(size_t size, D_free_fnc_t free_fnc) {
 	return ret;
 }
 
-unsigned D_retain(void* ptr) {
+unsigned D_mm_retain(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 
 	return ++slot->count;
 }
 
-unsigned D_release(void* ptr) {
+unsigned D_mm_release(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 	
 	if (slot->count == 1) {
@@ -51,12 +51,11 @@ unsigned D_release(void* ptr) {
 	return --slot->count;
 }
 
-unsigned D_retain_count(void* ptr) {
+unsigned D_mm_retain_count(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 	return slot->count;
 }
-
-void D_mm_destroy() {
+void D_mm_clean() {
 	int lost_references, i;
 	if((lost_references = d_hash_size(references)) != 0) {
 		void **refs = d_hash_keys(references);
@@ -64,12 +63,16 @@ void D_mm_destroy() {
 		for (i = 0 ; i < lost_references ; i++) {
 			char stringbuff[128];
 			slot_t *slot = d_hash_fetch(references, refs[i]);
-			sprintf(stringbuff,"Reference lost at %p with retain count %d\n", refs[i], slot->count);
+			sprintf(stringbuff,"Reference lost at %p with retain count %d", refs[i], slot->count);
 			ERROR(stringbuff);
 			free_slot(slot);
 		}
 		free(refs);
 	}
+}
+
+void D_mm_destroy() {
+	D_mm_clean();
 	free(references);
 }
 
