@@ -20,6 +20,11 @@ static void free_slot(void* ptr);
 
 
 void D_mm_init() {
+	if(references != NULL) {
+		ERROR("Memory Manager already initialized!");
+		print_trace();
+		abort();
+	}
 	references = d_hash_new(NULL);
 }
 
@@ -45,7 +50,7 @@ unsigned D_mm_release(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 	
 	if (slot->count == 1) {
-		free_slot(slot);
+		free_slot(ptr);
 		return 0;
 	}
 	return --slot->count;
@@ -55,17 +60,28 @@ unsigned D_mm_retain_count(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 	return slot->count;
 }
+
+unsigned D_mm_references_count() {
+	return d_hash_size(references);
+}
+
+unsigned D_mm_is_valid(void* ptr) {
+	return d_hash_fetch(references, ptr) != NULL;
+}
+
 void D_mm_clean() {
 	int lost_references, i;
 	if((lost_references = d_hash_size(references)) != 0) {
 		void **refs = d_hash_keys(references);
 
 		for (i = 0 ; i < lost_references ; i++) {
-			char stringbuff[128];
-			slot_t *slot = d_hash_fetch(references, refs[i]);
-			sprintf(stringbuff,"Reference lost at %p with retain count %d", refs[i], slot->count);
-			ERROR(stringbuff);
-			free_slot(slot);
+			//char stringbuff[128];
+			//slot_t *slot = d_hash_fetch(references, refs[i]);
+			//sprintf(stringbuff,"Reference lost at %p with retain count %d", refs[i], slot->count);
+			//ERROR(stringbuff);
+			slot_t* slot = d_hash_delete(references, refs[i]);
+			free(slot);
+			free(refs[i]);	
 		}
 		free(refs);
 	}
@@ -73,6 +89,7 @@ void D_mm_clean() {
 
 void D_mm_destroy() {
 	D_mm_clean();
+	references = NULL;
 	free(references);
 }
 

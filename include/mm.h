@@ -16,6 +16,10 @@ unsigned D_mm_release(void* ptr);
 
 unsigned D_mm_retain_count(void* ptr);
 
+unsigned D_mm_references_count();
+
+unsigned D_mm_is_valid(void* ptr);
+
 void D_mm_clean();
 
 void D_mm_destroy();
