@@ -25,7 +25,7 @@ void D_mm_init() {
 		print_trace();
 		abort();
 	}
-	references = d_hash_new(NULL);
+	references = d_hash_new(NULL, NULL);
 }
 
 void* D_mm_alloc(size_t size, D_free_fnc_t free_fnc) {

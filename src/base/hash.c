@@ -30,16 +30,18 @@ struct d_hashCDT {
 	int element_count;
 	int table_size;
 	d_hash_fnc_t hash_fnc;
+	d_hash_eqfnc_t eq_fnc;
 };
 
 
 static unsigned default_hash_fnc(void* key);
+static unsigned default_eq_fnc(void *key1, void* key2);
 static void grow(d_hash_t hash);
-static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size);
+static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, d_hash_eqfnc_t eq_fnc, int size);
 static int clear_table(struct slot_t table[], int slot, int size);
 
-d_hash_t d_hash_new(d_hash_fnc_t hash_fnc){
-	return do_hash_new(hash_fnc, HASHINISIZE);
+d_hash_t d_hash_new(d_hash_fnc_t fnc, d_hash_eqfnc_t eq_fnc) {
+	return do_hash_new(fnc, eq_fnc, HASHINISIZE);
 }
 
 int d_hash_insert(d_hash_t hash, void* key, void* element){
@@ -59,7 +61,7 @@ int d_hash_insert(d_hash_t hash, void* key, void* element){
 			hash->element_count++;
 			return 1;
 		}
-		if(hash->table[next].status == STATUS_BUSY && key == hash->table[next].key){
+		if(hash->table[next].status == STATUS_BUSY && hash->eq_fnc(key, hash->table[next].key)){
 			hash->table[next].element = element;
 			return 1;
 		}
@@ -78,7 +80,7 @@ void* d_hash_fetch(d_hash_t hash, void* key){
 	for (i = 0 ; i < hash->table_size && hash->table[next].status != STATUS_EMPTY; i++){
 		next = (slot+i) % hash->table_size;
 
-		if (hash->table[next].status == STATUS_BUSY && key == hash->table[next].key){
+		if (hash->table[next].status == STATUS_BUSY && hash->eq_fnc(key, hash->table[next].key)){
 			return hash->table[next].element;
 		}
 	}
@@ -97,7 +99,7 @@ void* d_hash_delete(d_hash_t hash, void* key) {
 		next = (slot+i) % hash->table_size;
 		ret = hash->table[next].element;
 
-		if (hash->table[next].status == STATUS_BUSY && key == hash->table[next].key) {
+		if (hash->table[next].status == STATUS_BUSY && hash->eq_fnc(key, hash->table[next].key)) {
 			if (hash->table[next + 1 % hash->table_size].status == STATUS_EMPTY) {	
 				hash->table[next].status = STATUS_EMPTY;
 				hash->element_count--;
@@ -134,7 +136,7 @@ void d_hash_destroy(d_hash_t hash){
 	free(hash);
 }
 
-static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size){
+static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, d_hash_eqfnc_t eq_fnc, int size) {
 	d_hash_t hash;
 	int i;
 	
@@ -144,6 +146,7 @@ static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, int size){
 	hash->element_count = 0;
 	hash->table_size = size;
 	hash->hash_fnc = (hash_fnc == NULL)? default_hash_fnc : hash_fnc;
+	hash->eq_fnc = (eq_fnc == NULL)? default_eq_fnc : eq_fnc;
 
 	for(i = 0 ; i < hash->table_size ; i++)
 		hash->table[i].status = STATUS_EMPTY;
@@ -160,7 +163,7 @@ static void grow(d_hash_t hash){
 		return;
 	}
 
-	new_hash = do_hash_new(hash->hash_fnc, hash->table_size*GROW_RATIO);
+	new_hash = do_hash_new(hash->hash_fnc, hash->eq_fnc, hash->table_size*GROW_RATIO);
 
 	for (i = 0 ; i < hash->table_size ; i++){
 		if (hash->table[i].status == STATUS_BUSY) {
@@ -190,3 +193,8 @@ static int clear_table(struct slot_t table[], int slot, int size){
 static unsigned default_hash_fnc(void* key) {
 	return (unsigned)key;
 }
+
+static unsigned default_eq_fnc(void *key1, void* key2) {
+	return key1 == key2;
+}
+

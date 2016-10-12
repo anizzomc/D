@@ -2,10 +2,14 @@
 #include "base/hash.h"
 #include "../../cutest/CuTest.h"
 #include <stdlib.h>
+#include <strings.h>
 
 #define LIMIT_STRESS 10000
 
 static unsigned int hash_same_fn(void *key);
+
+static unsigned int hash_str(void *key);
+static unsigned int str_equ(void *key1, void *key2);
 
 static d_hash_t hash = NULL;
 
@@ -14,6 +18,7 @@ static void after();
 static void before();
 
 static int find(void** keys, void* key, int size);
+
 
 void TestBaseHash_new(CuTest *tc) {
 	before();
@@ -137,6 +142,24 @@ void TestBashHash_keys(CuTest *tc) {
 	after();
 }
 
+void TestStrKeys_keys(CuTest *tc) {
+	d_hash_t hash = d_hash_new(hash_str, str_equ);
+	void* val1 = (void*) 0xDEADBEEF;
+	char *key1 = "key1";
+	char key2[10];
+
+	//Be sure the have different address.
+	strcpy(key2, key1);
+
+	
+	d_hash_insert(hash, key1, val1);
+
+	CuAssertPtrEquals(tc, val1, d_hash_fetch(hash, key2));
+
+	d_hash_destroy(hash);
+}
+
+
 static int find(void** keys, void* key, int size){
 	int i;
 	for(i = 0 ; i < size ; i++) {
@@ -148,7 +171,7 @@ static int find(void** keys, void* key, int size){
 }
 
 static void before() {
-	hash = d_hash_new(hash_same_fn);	
+	hash = d_hash_new(hash_same_fn, NULL);	
 }
 
 static void after() {
@@ -158,3 +181,20 @@ static void after() {
 static unsigned int hash_same_fn(void *key) {
 	return (unsigned int) key;
 }
+
+static unsigned int hash_str(void *key) {
+	char *str = (void *) key;
+	unsigned i = 0;
+
+	while(*str) {
+		i ^= (*str)*-13;
+		str++;
+	}
+	return i;
+}
+
+static unsigned int str_equ(void *key1, void *key2) {
+	return !strcmp(key1, key2);
+}
+
+
