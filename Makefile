@@ -10,6 +10,8 @@ TEST_FILE_OBJ=AllTest.o
 TEST_FILES=$(wildcard test/src/**/*.c)
 TEST_OBJ_FILES=$(TEST_FILES:.c=.o)
 
+all: $(TARGET)
+
 build: $(TARGET)
 
 $(TARGET):
