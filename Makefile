@@ -1,7 +1,8 @@
 INC_PATH=include/
 CFLAGS=-c -Wall
-TARGET=out/libd.a
-TEST_BUILD=out/test
+OUT_PATH=out/
+TARGET=$(OUT_PATH)libd.a
+TEST_BUILD=$(OUT_PATH)test
 OBJ_PATH=obj/
 SRC_PATH=src/
 TEST_FILE=AllTest.c
@@ -12,6 +13,8 @@ TEST_OBJ_FILES=$(TEST_FILES:.c=.o)
 build: $(TARGET)
 
 $(TARGET):
+	mkdir -p $(OBJ_PATH)
+	mkdir -p $(OUT_PATH)
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/stack.c -o $(OBJ_PATH)stack.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/clist.c -o $(OBJ_PATH)clist.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/d_malloc.c -o $(OBJ_PATH)d_malloc.o
@@ -21,12 +24,14 @@ $(TARGET):
 	ar rcs $(TARGET) $(OBJ_PATH)*.o
 
 test: $(TEST_BUILD)
-	out/test
+	$(OUT_PATH)test
 
 $(TEST_FILE):
+	mkdir -p test/obj/
 	test/search-script.sh > test/obj/$(TEST_FILE)
 
 $(TEST_BUILD): $(TARGET) $(TEST_FILE)
+	mkdir -p test/obj/
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/mm.c -o test/obj/mm.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/stackTest.c -o test/obj/stackTest.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/hashTest.c -o test/obj/hashTest.o 
@@ -35,8 +40,7 @@ $(TEST_BUILD): $(TARGET) $(TEST_FILE)
 	gcc $(CFLAGS) -I$(INC_PATH) test/cutest/CuTest.c -o test/obj/CuTest.o
 	gcc test/obj/*.o -Lout/ -ld -o out/test
 
-
 clean:
-	rm -f out/*
-	rm -f obj/*
-	rm -f test/obj/*
+	rm -rf out/*
+	rm -rf obj/*
+	rm -rf test/obj/*
