@@ -23,6 +23,7 @@ $(TARGET):
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/hash.c -o $(OBJ_PATH)hash.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/util.c -o $(OBJ_PATH)util.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)mm.c -o $(OBJ_PATH)mm.o
+	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)mm_pool.c -o $(OBJ_PATH)mm_pool.o
 	ar rcs $(TARGET) $(OBJ_PATH)*.o
 
 test: $(TEST_BUILD)
