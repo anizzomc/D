@@ -40,10 +40,12 @@ void* D_mm_alloc(size_t size, D_free_fnc_t free_fnc) {
 	return ret;
 }
 
-unsigned D_mm_retain(void* ptr) {
+void* D_mm_retain(void* ptr) {
 	slot_t* slot = assert_slot(ptr);
 
-	return ++slot->count;
+	++slot->count;
+
+	return ptr;
 }
 
 unsigned D_mm_release(void* ptr) {

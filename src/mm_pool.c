@@ -1,5 +1,6 @@
 #include <base/d_malloc.h>
 #include <base/clist.h>
+#include <base/log.h>
 #include <mm.h>
 #include <mm_pool.h>
 
@@ -15,18 +16,41 @@ static void set_next_current();
 static int is_current_full();
 
 void D_mm_pool_init(D_mm_pool_conf config) {
+	if(pools != NULL) {
+		ERROR("Pool already initialized");
+		abort();
+	}
+
+	if(config.pools <= 0 || config.pool_length <= 0) {
+		ERROR("Pool config invalid.");
+		abort();
+	}
+
 	current_config = config;
 	pools = d_clist_new(current_config.pools);
 	current = d_clist_new(current_config.pool_length);
 }
 
-void D_mm_pool_add(void *ptr) {
+void* D_mm_pool_add(void *ptr) {
 
 	if(is_current_full()) {
 		set_next_current();
 	}
 
 	add_to_current(ptr);
+
+	return ptr;
+}
+
+void D_mm_pool_destroy() {
+	while(!d_clist_is_empty(pools)) {
+		release_pool(d_clist_take(pools));
+	}
+	d_clist_destroy(pools);
+
+	pools = NULL;
+	current = NULL;
+
 }
 
 static int is_current_full() {
