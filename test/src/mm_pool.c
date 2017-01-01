@@ -13,11 +13,8 @@ static D_mm_pool_conf config = {1, 2};
 static void free_zombie(zombie_t* z);
 static zombie_t* new_zombie(int* ptr);
 
-
 static void after();
 static void before();
-
-
 
 void TestPool_adds_doesnt_change_retain(CuTest *tc) {
   before();
@@ -30,7 +27,6 @@ void TestPool_adds_doesnt_change_retain(CuTest *tc) {
   CuAssertIntEquals(tc, 1, D_mm_retain_count(ptr));
   after();
 }
-
 
 void TestPool_fill_pool(CuTest *tc) {
   before();
@@ -76,8 +72,6 @@ void TestPool_fill_pool_free(CuTest *tc) {
   after();
 }
 
-
-
 static void after() {
   if(init) {
     D_mm_pool_destroy();
@@ -86,7 +80,6 @@ static void after() {
   }
 }
 
-
 static void before() {
   if(!init) {
     D_mm_init();
@@ -94,10 +87,6 @@ static void before() {
     init = !init;
   }
 }
-
-
-
-
 
 static void free_zombie(zombie_t* z) {
   *(z->i) = 0;

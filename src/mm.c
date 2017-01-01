@@ -105,6 +105,7 @@ static void free_slot(void* ptr) {
 	}
 	free(slot);
 }
+
 static slot_t* assert_slot(void* ptr) {
 	slot_t* slot = d_hash_fetch(references, ptr);
 	if(slot == NULL) {
