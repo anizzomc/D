@@ -100,9 +100,8 @@ static void free_slot(void* ptr) {
 
 	if(slot->free_fnc != NULL) {
 		slot->free_fnc(ptr);
-	} else {
-		free(ptr);
 	}
+	free(ptr);	
 	free(slot);
 }
 

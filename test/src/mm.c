@@ -39,7 +39,7 @@ void TestMM_alloc(CuTest *tc) {
 	after();
 }
 
-void TestMM_retail(CuTest *tc) {
+void TestMM_retain(CuTest *tc) {
 	before();
 	int i = 1;
 
@@ -127,7 +127,6 @@ static void free_swarm(swarm_t* swarm) {
 		D_mm_release(swarm->zombies[i]);
 	}
 	D_mm_release(swarm->zombies);
-	free(swarm);
 }
 
 
