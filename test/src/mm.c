@@ -49,7 +49,8 @@ void TestMM_retail(CuTest *tc) {
 	CuAssertIntEquals(tc, 1, D_mm_retain_count(z));
 	int j;
 	for(j = 0 ; j < COUNT ; j++) {
-		CuAssertIntEquals(tc, j+2, D_mm_retain(z));
+		D_mm_retain(z);
+		CuAssertIntEquals(tc, j+2, D_mm_retain_count(z));
 	}
 
 	CuAssertIntEquals(tc, COUNT+1, D_mm_retain_count(z));

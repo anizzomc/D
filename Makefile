@@ -23,6 +23,7 @@ $(TARGET):
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/hash.c -o $(OBJ_PATH)hash.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)base/util.c -o $(OBJ_PATH)util.o
 	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)mm.c -o $(OBJ_PATH)mm.o
+	gcc $(CFLAGS) -I$(INC_PATH) $(SRC_PATH)mm_pool.c -o $(OBJ_PATH)mm_pool.o
 	ar rcs $(TARGET) $(OBJ_PATH)*.o
 
 test: $(TEST_BUILD)
@@ -35,6 +36,7 @@ $(TEST_FILE):
 $(TEST_BUILD): $(TARGET) $(TEST_FILE)
 	mkdir -p test/obj/
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/mm.c -o test/obj/mm.o 
+	gcc $(CFLAGS) -I$(INC_PATH) test/src/mm_pool.c -o test/obj/mm_pool.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/stackTest.c -o test/obj/stackTest.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/hashTest.c -o test/obj/hashTest.o 
 	gcc $(CFLAGS) -I$(INC_PATH) test/src/base/clistTest.c -o test/obj/clistTest.o 

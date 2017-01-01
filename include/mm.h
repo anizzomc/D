@@ -10,7 +10,7 @@ void D_mm_init();
 
 void* D_mm_alloc(size_t size, D_free_fnc_t free_fnc);
 
-unsigned D_mm_retain(void* ptr);
+void* D_mm_retain(void* ptr);
 
 unsigned D_mm_release(void* ptr);
 
