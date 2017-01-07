@@ -1,5 +1,5 @@
 INC_PATH=include/
-CFLAGS=-c -Wall
+CFLAGS=-c -Wall -m64
 OUT_PATH=out/
 TARGET=$(OUT_PATH)libd.a
 TEST_BUILD=$(OUT_PATH)test

@@ -2,7 +2,7 @@
 #include "base/hash.h"
 #include "../../cutest/CuTest.h"
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
 
 #define LIMIT_STRESS 10000
 

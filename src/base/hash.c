@@ -191,7 +191,7 @@ static int clear_table(struct slot_t table[], int slot, int size){
 }
 
 static unsigned default_hash_fnc(void* key) {
-	return (unsigned)key;
+	return (unsigned) key;
 }
 
 static unsigned default_eq_fnc(void *key1, void* key2) {
