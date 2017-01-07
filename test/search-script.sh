@@ -70,5 +70,6 @@ int main(void)
 {
 	SignalInit();
     RunAllTests();
+    return 0;
 }
 '

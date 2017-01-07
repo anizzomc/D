@@ -2,13 +2,15 @@
 #include "base/hash.h"
 #include "../../cutest/CuTest.h"
 #include <stdlib.h>
-#include <strings.h>
+#include <string.h>
+#include <stdint.h>
 
 #define LIMIT_STRESS 10000
 
-static unsigned int hash_same_fn(void *key);
+static uintptr_t hash_same_fn(void *key);
 
-static unsigned int hash_str(void *key);
+static uintptr_t hash_str(void *key);
+
 static unsigned int str_equ(void *key1, void *key2);
 
 static d_hash_t hash = NULL;
@@ -171,18 +173,18 @@ static int find(void** keys, void* key, int size){
 }
 
 static void before() {
-	hash = d_hash_new(hash_same_fn, NULL);	
+	hash = d_hash_new((d_hash_fnc_t) hash_same_fn, NULL);	
 }
 
 static void after() {
 	d_hash_destroy(hash);
 }
 
-static unsigned int hash_same_fn(void *key) {
-	return (unsigned int) key;
+static uintptr_t hash_same_fn(void *key) {
+	return (uintptr_t) key;
 }
 
-static unsigned int hash_str(void *key) {
+static uintptr_t hash_str(void *key) {
 	char *str = (void *) key;
 	unsigned i = 0;
 
