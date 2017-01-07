@@ -2,6 +2,7 @@
 #include "base/d_malloc.h"
 #include "base/log.h"
 #include <stdlib.h>
+#include <stdint.h>
 
 #define HASHINISIZE 3337
 #define GROW_RATIO 2
@@ -34,7 +35,7 @@ struct d_hashCDT {
 };
 
 
-static unsigned default_hash_fnc(void* key);
+static uintptr_t default_hash_fnc(void* key);
 static unsigned default_eq_fnc(void *key1, void* key2);
 static void grow(d_hash_t hash);
 static d_hash_t do_hash_new(d_hash_fnc_t hash_fnc, d_hash_eqfnc_t eq_fnc, int size);
@@ -190,8 +191,8 @@ static int clear_table(struct slot_t table[], int slot, int size){
 	return i-1;
 }
 
-static unsigned default_hash_fnc(void* key) {
-	return (unsigned) key;
+static uintptr_t default_hash_fnc(void* key) {
+	return (uintptr_t) key;
 }
 
 static unsigned default_eq_fnc(void *key1, void* key2) {

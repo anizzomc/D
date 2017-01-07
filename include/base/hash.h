@@ -1,8 +1,9 @@
 #ifndef _HASH_H_
 #define _HASH_H_
+#include <stdint.h>
 
 typedef struct d_hashCDT *d_hash_t;
-typedef unsigned int (*d_hash_fnc_t)(void*);
+typedef uintptr_t (*d_hash_fnc_t)(void*);
 typedef unsigned int (*d_hash_eqfnc_t)(void *, void *);
 
 d_hash_t d_hash_new(d_hash_fnc_t fnc, d_hash_eqfnc_t eq_fnc);
